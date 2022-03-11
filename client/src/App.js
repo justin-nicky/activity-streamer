@@ -1,32 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom"
 import { Signin, Signup } from "./components";
-import { HomeScreen, LiveStreamScreen, PageNotFound } from "./screens";
+import { AuthScreen, HomeScreen, LiveStreamScreen, PageNotFound } from "./screens";
 
 const App = () => {
+  const [logOut, SetLogout] = useState(false)
+
   const navigate = useNavigate()
   let data
   useEffect(() => {
     data = localStorage.getItem('user')
-    console.log(data)
+
     if (!data) {
-      navigate('/signin')
+      navigate('/auth')
     }
-  }, [data, navigate])
+  }, [data, navigate, logOut])
 
   return (
     <>
       <Routes>
-        <Route path='/signin' element={
-          <Signin />
-        }>
-        </Route >
-        <Route path='/signup' element={
-          <Signup />
+        <Route path='/auth' element={
+          <AuthScreen />
         }>
         </Route >
         <Route path='/' element={
-          <HomeScreen />
+          <HomeScreen SetLogout={SetLogout} />
         }>
         </Route >
         <Route path='/live' element={

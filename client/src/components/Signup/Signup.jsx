@@ -39,7 +39,7 @@ const Signup = () => {
                     </div>
                     <input type="submit" value="REGISTER" />
                     <span
-                        onClick={() => navigate('/signin')}
+                        onClick={() => navigate('/auth', { state: { signup: false } })}
                     >Already have an account?</span>
                     {/* <a >Already have an account?</a> */}
                     {(err != "") ? (<div className="error">{err}</div>) : ""}

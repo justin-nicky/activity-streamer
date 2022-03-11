@@ -41,7 +41,7 @@ const Signin = () => {
                     </div>
                     <input type="submit" value="LOGIN" />
                     <span
-                        onClick={() => navigate('/signup')}
+                        onClick={() => navigate('/auth', { state: { signup: true } })}
                     >Don't have an account?</span>
                     {(err !== "") ? (<div className="error">{err}</div>) : ""}
                 </div>

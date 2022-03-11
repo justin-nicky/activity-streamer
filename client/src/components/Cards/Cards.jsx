@@ -3,50 +3,48 @@ import axios from 'axios'
 
 import './Cards.css'
 
-const Cards = ({postMessageSuccess}) => {
+const Cards = ({ postMessageSuccess, message, id, username, messages, setPostMessageSuccess }) => {
     const [isEdit, setIsEdit] = useState(false)
-    const [messages, setMessages] = useState([])
-    const [message, setMessage] = useState('')
+    const [editMessage, setEditMessage] = useState('')
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const {data} = await axios.get('http://localhost:5000/api/messages', {
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
-                    }})
-                setMessages(data)
-            } catch (error) {
-                
-            }
+    const getEditMessage = (id) => {
+        let editMessageDetails = messages.find(message => message?.id === id)
+        setEditMessage(editMessageDetails?.message)
+        setIsEdit(true)
+    }
+
+    const handleEdit = async (id) => {
+        try {
+            await axios.patch(`http://localhost:5000/api/messages/${id}`, { message: editMessage }, {
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+                }
+            })
+            setPostMessageSuccess(value => !value)
+            setIsEdit(false)
+        } catch (error) {
+            console.log(error);
         }
-        fetchData()
-    },[postMessageSuccess])
-const handleEdit=async(id)=>{
+    }
 
-try {
-    await axios.patch(`http://localhost:5000/api/messages/${id}`,message, {
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
-                    }})
-} catch (error) {
-    
-}
-}
-const getEditMessage=(id)=>{
-    let editMessage=messages.find(message=>message?.id===id)
-    setMessage(editMessage?.message)
-    console.log(editMessage);
-    setIsEdit(true)
-}
-
-
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/messages/${id}`, {
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+                }
+            })
+            setPostMessageSuccess(value => !value)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
-        messages.map((message) => (
-        <div className="card text-center mx-auto mt-5" key={message?.id}>
+
+        <div className="card text-center mx-auto mt-5" key={id}>
             <div className="overflow">
                 <img src="" alt=""
                     className='card-img-top'
@@ -54,29 +52,31 @@ const getEditMessage=(id)=>{
             </div>
             <div className="card-body text-dark">
                 <p className="card-text text-secondary">
-                    {message?.message}
-                    </p>
-                    <span>{message?.sender?.email?.split('@')[0]}</span>
-                    <br />
+                    {message}
+                </p>
+                <span>{username}</span>
+                <br />
                 {isEdit && <div>
-                    <textarea type="text" placeholder='Enter message' 
-                    value={message} onChange={(e)=>setMessage(e.target.value)}/>
+                    <textarea type="text" placeholder='Enter message'
+                        value={editMessage} onChange={(e) => setEditMessage(e.target.value)} />
                 </div>}
                 {isEdit ? <button className='btn btn-outline-primary mx-2'
-                onClick={()=>handleEdit(message?.id)}
+                    onClick={() => handleEdit(id)}
                 >Save</button>
                     :
                     <button button className='btn btn-outline-primary mx-2'
-                        onClick={() => getEditMessage(message?.id)}
+                        onClick={() => getEditMessage(id)}
                     >Edit</button>}
                 {isEdit ? <button className='btn btn-outline-danger'
                     onClick={() => setIsEdit(false)}
 
                 >Cancel</button> :
-                    <button className='btn btn-outline-danger'>Delete</button>}
+                    <button className='btn btn-outline-danger'
+                        onClick={() => handleDelete(id)}
+                    >Delete</button>}
             </div>
         </div >
-    )))
+    )
 }
 
 export default Cards

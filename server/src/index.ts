@@ -14,9 +14,7 @@ import { updateMessageRouter } from './routes/updateMessage'
 import { deleteMessageRouter } from './routes/deleteMessage'
 import { getMessagesRouter } from './routes/getMessages'
 import { Websocket } from './socket/webSocket'
-// import { getCurrentUser, userJoin, userLeave } from './socket/users'
-// import { Conversation } from './models/conversation'
-// import { Message } from './models/message'
+import { signoutRouter } from './routes/logout'
 
 const app = express()
 const httpServer = http.createServer(app)
@@ -27,18 +25,9 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-// const io = new Server(httpServer, {
-//   path: '/api/socket.io',
-//   cors: {
-//     origin: '*',
-//     methods: 'GET',
-//   },
-//   allowEIO3: true,
-// })
-
+// Socket connection
 const io = Websocket.getInstance(httpServer)
 
-// Socket connection
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`)
 
@@ -54,6 +43,7 @@ app.get('/', (req, res) => {
 
 app.use(signupRouter)
 app.use(signinRouter)
+app.use(signoutRouter)
 app.use(addMessageRouter)
 app.use(updateMessageRouter)
 app.use(deleteMessageRouter)

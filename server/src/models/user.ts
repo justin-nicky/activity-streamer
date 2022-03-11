@@ -20,7 +20,6 @@ interface UserModel extends mongoose.Model<UserDoc> {
 export interface UserDoc extends mongoose.Document {
   email: string
   password: string
-  //messages: mongoose.Types.ObjectId[]
 }
 
 const userSchema = new mongoose.Schema(
@@ -33,10 +32,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
     },
-    // messages: {
-    //   type: [{ type: mongoose.Types.ObjectId, ref: 'Message' }],
-    //   default: [],
-    // },
   },
   {
     toJSON: {
