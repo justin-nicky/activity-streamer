@@ -3,7 +3,6 @@ import 'express-async-errors'
 import cors from 'cors'
 import morgan from 'morgan'
 import http from 'http'
-import { Server } from 'socket.io'
 import { NotFoundError, errorHandler } from '@geekfindr/common'
 import dotenv from 'dotenv'
 
@@ -14,12 +13,13 @@ import { addMessageRouter } from './routes/addMessage'
 import { updateMessageRouter } from './routes/updateMessage'
 import { deleteMessageRouter } from './routes/deleteMessage'
 import { getMessagesRouter } from './routes/getMessages'
+import { Websocket } from './socket/webSocket'
 // import { getCurrentUser, userJoin, userLeave } from './socket/users'
 // import { Conversation } from './models/conversation'
 // import { Message } from './models/message'
 
 const app = express()
-const server = http.createServer(app)
+const httpServer = http.createServer(app)
 dotenv.config()
 
 app.use(cors())
@@ -27,19 +27,20 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-const io = new Server(server, {
-  path: '/api/socket.io',
-  cors: {
-    origin: '*',
-    methods: 'GET',
-  },
-  allowEIO3: true,
-})
+// const io = new Server(httpServer, {
+//   path: '/api/socket.io',
+//   cors: {
+//     origin: '*',
+//     methods: 'GET',
+//   },
+//   allowEIO3: true,
+// })
 
-// Socket connection and middlewares
+const io = Websocket.getInstance(httpServer)
+
+// Socket connection
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`)
-  console.log(socket.data)
 
   socket.on('disconnect', () => {
     console.log(`Client disconnected: ${socket.id}`)
@@ -73,8 +74,8 @@ const start = async () => {
 
   connectDB()
 
-  server.listen(3000, () => {
-    console.log('Chat service listening on port 3000...')
+  httpServer.listen(5000, () => {
+    console.log('Chat service listening on port 5000...')
   })
 }
 start()

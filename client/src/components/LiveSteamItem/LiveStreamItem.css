@@ -1,0 +1,33 @@
+.chatitem {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    transform-origin: left;
+    margin: 10px;
+
+}
+
+    .chatitem_content {
+        background-color: #4462ff;
+        color: #fff;
+        padding: 10px 15px;
+        border-radius: 10px 10px 10px 0;
+        max-width: 75%;
+        min-width: 50%;
+    }
+    .chatitem_chatmsg {
+        user-select: none;
+    }
+    .chatitem_chatmeta {
+        justify-content: space-between;
+        display: flex;
+        margin-top: 10px;
+    }
+      
+ .chatitem_chatmeta_time {
+            font-size: 0.75rem;
+            color: #d7dcfa;
+            user-select: none;
+        }
+    

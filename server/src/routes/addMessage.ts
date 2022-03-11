@@ -4,6 +4,7 @@ import { validateRequest, protectRoute } from '@geekfindr/common'
 import mongoose from 'mongoose'
 
 import { Message } from '../models/message'
+import { Websocket } from '../socket/webSocket'
 
 const router = express.Router()
 
@@ -21,9 +22,15 @@ router.post(
 
     // Creating a new message
     await Message.build({
-      senderId: new mongoose.Types.ObjectId(req.user.id),
+      sender: new mongoose.Types.ObjectId(req.user.id),
       message: messageText,
     }).save()
+
+    // Emitting message-added event
+    Websocket.getInstance().emit('activity', {
+      type: 'message:added',
+      user: req.user,
+    })
 
     res.json({})
   }

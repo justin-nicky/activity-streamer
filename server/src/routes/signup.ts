@@ -4,6 +4,7 @@ import { validateRequest, BadRequestError } from '@geekfindr/common'
 
 import { User } from '../models/user'
 import { generateToken } from '../utils/generateToken'
+import { Websocket } from '../socket/webSocket'
 
 const router = express.Router()
 
@@ -44,6 +45,12 @@ router.post(
     res.json({
       ...user.toJSON(),
       token: token,
+    })
+
+    // Emitting login event
+    Websocket.getInstance().emit('activity', {
+      type: 'login',
+      user: user,
     })
   }
 )

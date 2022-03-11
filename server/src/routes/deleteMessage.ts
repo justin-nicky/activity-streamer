@@ -8,6 +8,7 @@ import {
 } from '@geekfindr/common'
 
 import { Message } from '../models/message'
+import { Websocket } from '../socket/webSocket'
 
 const router = express.Router()
 
@@ -30,13 +31,19 @@ router.delete(
     }
 
     // Checking permissions
-    const isCurrentUserTheAuthor = message.senderId.toString() === req.user.id
+    const isCurrentUserTheAuthor = message.sender.toString() === req.user.id
     if (!isCurrentUserTheAuthor) {
       throw new ForbiddenOperationError()
     }
 
     // Deleting the message
     await Message.findByIdAndDelete(messageId)
+
+    // Emitting message-deleted event
+    Websocket.getInstance().emit('activity', {
+      type: 'message:deleted',
+      user: req.user,
+    })
 
     res.json({})
   }

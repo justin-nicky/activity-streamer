@@ -8,6 +8,7 @@ import {
 } from '@geekfindr/common'
 
 import { Message } from '../models/message'
+import { Websocket } from '../socket/webSocket'
 
 const router = express.Router()
 
@@ -32,7 +33,7 @@ router.patch(
     }
 
     // Checking permissions
-    const isCurrentUserTheAuthor = message.senderId.toString() === req.user.id
+    const isCurrentUserTheAuthor = message.sender.toString() === req.user.id
     if (!isCurrentUserTheAuthor) {
       throw new ForbiddenOperationError()
     }
@@ -40,6 +41,12 @@ router.patch(
     // Updating the message
     message.message = messageText
     await message.save()
+
+    // Emitting message-updated event
+    Websocket.getInstance().emit('activity', {
+      type: 'message:updated',
+      user: req.user,
+    })
 
     res.json({})
   }

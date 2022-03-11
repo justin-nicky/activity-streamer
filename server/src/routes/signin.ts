@@ -5,6 +5,7 @@ import { validateRequest, BadRequestError } from '@geekfindr/common'
 import { User } from '../models/user'
 import { Password } from '../utils/password'
 import { generateToken } from '../utils/generateToken'
+import { Websocket } from '../socket/webSocket'
 
 const router = express.Router()
 
@@ -27,11 +28,11 @@ router.post(
     }
 
     //checking if password is correct
-    const isValidPassword = await Password.comparePasswords(
+    const isPasswordValid = await Password.comparePasswords(
       password,
       existingUser.password!
     )
-    if (!isValidPassword) {
+    if (!isPasswordValid) {
       throw new BadRequestError('Invalid credentials')
     }
 
@@ -44,6 +45,12 @@ router.post(
     res.json({
       ...existingUser.toJSON(),
       token: token,
+    })
+
+    // Emitting login event
+    Websocket.getInstance().emit('activity', {
+      type: 'login',
+      user: existingUser,
     })
   }
 )

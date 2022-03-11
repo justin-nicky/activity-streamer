@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 // An interface that describes the properties
 // that are requried to create a new Message
 interface MessageAttrs {
-  senderId: mongoose.Types.ObjectId
+  sender: mongoose.Types.ObjectId
   message: string
 }
 
@@ -16,13 +16,13 @@ interface MessageModel extends mongoose.Model<MessageDoc> {
 // An interface that describes the properties
 // that a Message Document has
 export interface MessageDoc extends mongoose.Document {
-  senderId: mongoose.Types.ObjectId
+  sender: mongoose.Types.ObjectId
   message: string
 }
 
 const messageSchema = new mongoose.Schema(
   {
-    senderId: {
+    sender: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
       required: true,
