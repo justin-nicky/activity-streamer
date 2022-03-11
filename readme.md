@@ -11,12 +11,21 @@ You have to push the code in a github and share the repo details with us and nee
 ### Steps to run the application:
 
 #1. Clone the repo.
+
 #2. Make sure that you have installed node.
+
 #3. place the `.env` file in the server directory.
+
 #4. within the server directory, run: `npm i && npm start`
+
 #5. Navigate to the client directory and run: `npm i && npm start`
+
 #6. Make sure both client and server are running.
+
 #7. You can go to `localhost:3000` from your browser and test the app.
+
 #8. Go to the live-stream page to listen to the activities.
 
 PS: I am a backend developer, so please don't judge me on my frontend skills😅.
+
+contact: 9746622945
